@@ -2,357 +2,1398 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
 <title>Marble Thermal Tuner</title>
 <style>
   :root {
-    --bg: #0f1115;
-    --surface: #181c23;
-    --surface-2: #202631;
-    --border: rgba(255,255,255,0.08);
-    --text: #eef1f6;
-    --muted: #98a2b3;
-    --accent: #3b82f6;
-    --accent-soft: rgba(59,130,246,0.16);
-    --green: #22c55e;
-    --green-soft: rgba(34,197,94,0.15);
-    --amber: #f59e0b;
-    --amber-soft: rgba(245,158,11,0.16);
-    --red: #ef4444;
-    --red-soft: rgba(239,68,68,0.16);
-    --red-border: rgba(239,68,68,0.38);
-    --radius: 18px;
+    --bg: #0b0d11;
+    --surface: #131720;
+    --surface-2: #1a202c;
+    --surface-hover: #202838;
+    --border: rgba(255, 255, 255, 0.10);
+    --border-strong: rgba(255, 255, 255, 0.20);
+    --text: #f1f5f9;
+    --muted: #9aa6b8;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-fg: #93c5fd;
+    --accent-soft: rgba(37, 99, 235, 0.20);
+    --accent-border: rgba(96, 165, 250, 0.45);
+    --green-fg: #86efac;
+    --green-dot: #4ade80;
+    --green-soft: rgba(22, 163, 74, 0.20);
+    --amber-fg: #fcd34d;
+    --amber-dot: #fbbf24;
+    --amber-soft: rgba(217, 119, 6, 0.22);
+    --amber-border: rgba(251, 191, 36, 0.40);
+    --red: #dc2626;
+    --red-hover: #b91c1c;
+    --red-fg: #fca5a5;
+    --red-dot: #f87171;
+    --red-soft: rgba(220, 38, 38, 0.20);
+    --red-border: rgba(248, 113, 113, 0.45);
+    --focus: #60a5fa;
+    --track: #222a38;
+    --tick: rgba(241, 245, 249, 0.45);
+    --shadow-dock: 0 -6px 24px rgba(0, 0, 0, 0.44);
+    --shadow-dialog: 0 18px 48px rgba(0, 0, 0, 0.62);
+    --radius-panel: 16px;
+    --radius-btn: 12px;
   }
+
   @media (prefers-color-scheme: light) {
     :root {
-      --bg: #f4f6fa;
+      --bg: #f2f4f8;
       --surface: #ffffff;
-      --surface-2: #eef2f7;
-      --border: rgba(15,23,42,0.09);
+      --surface-2: #e9eef5;
+      --surface-hover: #eef2f8;
+      --border: rgba(15, 23, 42, 0.11);
+      --border-strong: rgba(15, 23, 42, 0.22);
       --text: #0f172a;
-      --muted: #64748b;
-      --accent: #2563eb;
-      --accent-soft: rgba(37,99,235,0.11);
-      --green: #16a34a;
-      --green-soft: rgba(22,163,74,0.12);
-      --amber: #d97706;
-      --amber-soft: rgba(217,119,6,0.12);
-      --red: #dc2626;
-      --red-soft: rgba(220,38,38,0.11);
-      --red-border: rgba(220,38,38,0.32);
+      --muted: #475569;
+      --accent: #1d4ed8;
+      --accent-hover: #1e40af;
+      --accent-fg: #1d4ed8;
+      --accent-soft: rgba(29, 78, 216, 0.11);
+      --accent-border: rgba(29, 78, 216, 0.36);
+      --green-fg: #166534;
+      --green-dot: #16a34a;
+      --green-soft: rgba(22, 163, 74, 0.14);
+      --amber-fg: #92400e;
+      --amber-dot: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.15);
+      --amber-border: rgba(180, 83, 9, 0.34);
+      --red: #b91c1c;
+      --red-hover: #991b1b;
+      --red-fg: #991b1b;
+      --red-dot: #dc2626;
+      --red-soft: rgba(220, 38, 38, 0.12);
+      --red-border: rgba(185, 28, 28, 0.36);
+      --focus: #1d4ed8;
+      --track: #dde4ee;
+      --tick: rgba(15, 23, 42, 0.42);
+      --shadow-dock: 0 -4px 18px rgba(15, 23, 42, 0.09);
+      --shadow-dialog: 0 18px 42px rgba(15, 23, 42, 0.20);
     }
   }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    margin: 0;
-    padding: calc(env(safe-area-inset-top, 12px) + 14px) 16px calc(env(safe-area-inset-bottom, 16px) + 24px);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
+  html {
     background: var(--bg);
     color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+    font-size: 14px;
     line-height: 1.45;
+    -webkit-text-size-adjust: 100%;
   }
-  .container { max-width: 560px; margin: 0 auto; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    padding: calc(env(safe-area-inset-top, 10px) + 10px) 14px calc(env(safe-area-inset-bottom, 12px) + 132px);
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .page {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Header */
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    gap: 8px;
+    gap: 10px;
   }
-  .title-wrap h1 {
-    font-size: 21px;
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand h1 {
+    font-size: clamp(18px, 5vw, 21px);
     font-weight: 700;
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    white-space: nowrap;
   }
-  .title-wrap p {
-    font-size: 12.5px;
+
+  .brand p {
+    font-size: 13px;
     color: var(--muted);
     margin: 2px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .pill {
+
+  .status-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 600;
     padding: 5px 10px;
     border-radius: 999px;
-    background: var(--green-soft);
-    color: var(--green);
     white-space: nowrap;
-  }
-  .pill.warn { background: var(--amber-soft); color: var(--amber); }
-  .dot {
-    width: 7px; height: 7px; border-radius: 50%; background: currentColor;
-  }
-
-  .telemetry {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .stat {
-    background: var(--surface);
+    flex-shrink: 0;
+    background: var(--surface-2);
+    color: var(--muted);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 11px 12px;
-  }
-  .stat .label { font-size: 11px; color: var(--muted); }
-  .stat .val { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
-  .stat .sub { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
-
-  .meta-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    padding: 9px 12px;
-    margin-bottom: 18px;
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .meta-bar strong { color: var(--text); font-weight: 600; }
-
-  .section-title {
-    font-size: 12.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-    margin: 0 0 10px 2px;
   }
 
-  .presets { display: flex; flex-direction: column; gap: 11px; }
-  .card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 15px;
-    transition: border-color 0.18s ease, transform 0.12s ease;
-    cursor: pointer;
-  }
-  .card:active { transform: scale(0.988); }
-  .card.active {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
-  .card.danger.active {
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px var(--red-soft);
-  }
-  .card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-  .card-title {
-    font-size: 15.5px;
-    font-weight: 700;
-  }
-  .badge {
-    font-size: 10.5px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .badge.blue { background: var(--accent-soft); color: var(--accent); }
-  .badge.amber { background: var(--amber-soft); color: var(--amber); }
-  .badge.red { background: var(--red-soft); color: var(--red); }
-  .badge.gray { background: var(--surface-2); color: var(--muted); }
-  .badge.active-tag { background: var(--accent); color: #fff; }
-  .badge.active-tag.danger { background: var(--red); color: #fff; }
+  .status-pill.ok    { background: var(--green-soft); color: var(--green-fg); border-color: transparent; }
+  .status-pill.warn  { background: var(--amber-soft); color: var(--amber-fg); border-color: transparent; }
+  .status-pill.error { background: var(--red-soft); color: var(--red-fg); border-color: var(--red-border); }
+  .status-pill.busy  { background: var(--accent-soft); color: var(--accent-fg); border-color: transparent; }
 
-  .card-desc {
-    font-size: 12.5px;
-    color: var(--muted);
-    margin: 0 0 10px;
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
   }
-  .warn-banner {
+
+  .status-pill.ok .status-dot    { background: var(--green-dot); }
+  .status-pill.warn .status-dot  { background: var(--amber-dot); }
+  .status-pill.error .status-dot { background: var(--red-dot); }
+
+  /* Persistent Unleashed Active Alert */
+  .unleashed-banner {
+    display: none;
+    align-items: flex-start;
+    gap: 9px;
     background: var(--red-soft);
     border: 1px solid var(--red-border);
-    color: var(--red);
-    border-radius: 10px;
-    padding: 8px 10px;
-    font-size: 11.5px;
-    font-weight: 600;
-    margin: 0 0 10px;
+    border-radius: var(--radius-panel);
+    padding: 10px 12px;
+    color: var(--red-fg);
+    font-size: 13px;
+    line-height: 1.4;
+    text-wrap: pretty;
   }
-  .specs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-    font-size: 11.5px;
-  }
-  .spec-item {
-    background: var(--surface-2);
-    border-radius: 9px;
-    padding: 6px 8px;
-  }
-  .spec-item span { display: block; font-size: 10px; color: var(--muted); }
-  .spec-item b { font-weight: 600; color: var(--text); }
 
-  .actions {
-    margin-top: 16px;
+  .unleashed-banner.show {
     display: flex;
-    gap: 10px;
   }
-  button.primary {
-    flex: 1;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    padding: 13px 16px;
-    font-size: 14.5px;
+
+  .unleashed-banner strong {
+    display: block;
+    font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    transition: opacity 0.15s, background 0.15s;
+    color: var(--red-fg);
   }
-  button.primary.danger { background: var(--red); }
-  button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
-  button.secondary {
+
+  /* Unified Hardware Telemetry Panel */
+  .panel {
     background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px 4px 12px;
+    border-bottom: 1px solid var(--border);
+    min-height: 48px;
+  }
+
+  .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .refresh-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .updated-at {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--surface-2);
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 13px 14px;
-    font-size: 13.5px;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    white-space: nowrap;
+    transition: background 160ms ease, border-color 160ms ease;
   }
 
-  .log-box {
-    margin-top: 14px;
+  .btn-icon:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+  }
+
+  .btn-icon:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .icon-lg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .spinning {
+    animation: spin 680ms linear infinite;
+  }
+
+  /* 3-Column Hairline Temperature Strip */
+  .temp-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.92fr) minmax(0, 0.84fr);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .temp-cell {
+    padding: 8px 10px;
+    min-width: 0;
+  }
+
+  .temp-cell + .temp-cell {
+    border-left: 1px solid var(--border);
+  }
+
+  .temp-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .temp-val {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 2px 0;
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  .temp-val.warm { color: var(--amber-fg); }
+  .temp-val.hot  { color: var(--red-fg); }
+
+  .temp-sub {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+  }
+
+  /* Calibrated VIRTUAL-SENSOR0 Thermal Scale */
+  .gauge-block {
+    padding: 7px 12px 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .gauge-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .gauge-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .headroom-chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .headroom-chip.cool { background: var(--green-soft); color: var(--green-fg); }
+  .headroom-chip.warm { background: var(--amber-soft); color: var(--amber-fg); }
+  .headroom-chip.hot  { background: var(--red-soft); color: var(--red-fg); }
+
+  .gauge-track-wrap {
+    position: relative;
+    height: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .gauge-track {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--track);
+    overflow: hidden;
+  }
+
+  .gauge-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: var(--green-dot);
+    transition: width 240ms ease-out, background-color 240ms ease-out;
+  }
+
+  .gauge-fill.warm { background: var(--amber-dot); }
+  .gauge-fill.hot  { background: var(--red-dot); }
+
+  .gauge-ticks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .gauge-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--tick);
+    transform: translateX(-1px);
+  }
+
+  .gauge-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .gauge-markers {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 2x2 Hairline System Meta Grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meta-cell {
+    padding: 6px 12px;
+    min-width: 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .meta-cell:nth-child(1),
+  .meta-cell:nth-child(2) {
+    border-top: none;
+  }
+
+  .meta-cell:nth-child(even) {
+    border-left: 1px solid var(--border);
+  }
+
+  .meta-key {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .meta-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sconfig-hint {
+    padding: 7px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+
+  .sconfig-hint.warn {
+    background: var(--amber-soft);
+    color: var(--amber-fg);
+  }
+
+  .sconfig-hint.error {
+    background: var(--red-soft);
+    color: var(--red-fg);
+  }
+
+  /* Thermal Ladder Section */
+  .presets-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 2px;
+  }
+
+  .section-head h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .ladder-divider {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: var(--red-soft);
+    border-top: 1px solid var(--red-border);
+    border-bottom: 1px solid var(--red-border);
+    color: var(--red-fg);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .preset-row {
+    border-top: 1px solid var(--border);
+    scroll-margin-bottom: 148px;
+    transition: background-color 160ms ease;
+  }
+
+  .preset-row:first-of-type,
+  .ladder-divider + .preset-row {
+    border-top: none;
+  }
+
+  .preset-row.is-active {
+    background: var(--accent-soft);
+  }
+
+  .preset-row.is-active.is-danger {
+    background: var(--red-soft);
+  }
+
+  .preset-row.is-pending {
+    background: var(--surface-hover);
+  }
+
+  .preset-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-right: 6px;
+  }
+
+  .preset-label {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px 8px 12px;
+    cursor: pointer;
+    min-height: 48px;
+    position: relative;
+  }
+
+  .preset-radio-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+
+  .preset-radio-input:focus-visible + .radio-ring {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .preset-radio-input:disabled ~ .preset-main,
+  .preset-radio-input:disabled + .radio-ring {
+    opacity: 0.6;
+  }
+
+  .radio-ring {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    transition: border-color 150ms ease;
+  }
+
+  .radio-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    transform: scale(0.4);
+    transition: transform 150ms ease, background-color 150ms ease;
+  }
+
+  .preset-row.is-selected .radio-ring {
+    border-color: var(--accent-fg);
+  }
+
+  .preset-row.is-selected .radio-dot {
+    background: var(--accent-fg);
+    transform: scale(1);
+  }
+
+  .preset-row.is-selected.is-danger .radio-ring {
+    border-color: var(--red-fg);
+  }
+
+  .preset-row.is-selected.is-danger .radio-dot {
+    background: var(--red-fg);
+  }
+
+  .preset-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .preset-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .preset-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .badge.tier-blue  { background: var(--accent-soft); color: var(--accent-fg); }
+  .badge.tier-amber { background: var(--amber-soft); color: var(--amber-fg); }
+  .badge.tier-red   { background: var(--red-soft); color: var(--red-fg); }
+  .badge.tier-gray  { background: var(--surface-2); color: var(--muted); }
+
+  .badge.state-active {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .badge.state-active.danger {
+    background: var(--red);
+    color: #ffffff;
+  }
+
+  .badge.state-pending {
+    background: transparent;
+    color: var(--accent-fg);
+    border: 1px solid var(--accent-border);
+  }
+
+  .badge.state-pending.danger {
+    color: var(--red-fg);
+    border-color: var(--red-border);
+  }
+
+  .preset-summary {
+    margin-top: 2px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-specs {
+    appearance: none;
+    background: var(--surface-2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .btn-specs:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .btn-specs[aria-expanded="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-fg);
+    border-color: var(--accent-border);
+  }
+
+  .chevron {
+    width: 15px;
+    height: 15px;
+    transition: transform 180ms ease;
+  }
+
+  .btn-specs[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Inline Hazard Preview when Unleashed is staged (even if Specs collapsed) */
+  .staged-hazard {
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--red-soft);
+    border-top: 1px solid var(--red-border);
+    color: var(--red-fg);
+    font-size: 12.5px;
+    line-height: 1.4;
+    text-wrap: pretty;
+    scroll-margin-bottom: 148px;
+  }
+
+  .preset-row.is-selected.is-danger .staged-hazard {
+    display: flex;
+  }
+
+  /* On-Demand Flush Spec Drawer (Zero Nested Cards) */
+  .preset-details {
+    border-top: 1px solid var(--border);
+    scroll-margin-bottom: 148px;
+  }
+
+  .preset-desc {
+    margin: 0;
+    padding: 10px 14px 9px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .spec-list {
+    margin: 0;
+    padding: 0 14px 10px;
+  }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: minmax(118px, 37%) minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 0;
+    border-top: 1px solid var(--border);
+    align-items: baseline;
+  }
+
+  .spec-row dt {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .spec-row dd {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* Execution Log Panel */
+  .log-panel {
+    display: none;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 13px;
-    padding: 10px 12px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 11px;
-    color: var(--muted);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+    scroll-margin-bottom: 148px;
+  }
+
+  .log-panel.show  { display: block; }
+  .log-panel.ok    { border-color: var(--green-dot); }
+  .log-panel.warn  { border-color: var(--amber-border); }
+  .log-panel.error { border-color: var(--red-border); }
+
+  .log-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px 6px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .log-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .log-panel.ok .log-title    { color: var(--green-fg); }
+  .log-panel.warn .log-title  { color: var(--amber-fg); }
+  .log-panel.error .log-title { color: var(--red-fg); }
+
+  .log-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .log-body {
+    margin: 0;
+    padding: 10px 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
-    display: none;
   }
-  .log-box.show { display: block; }
-  .note {
-    margin-top: 14px;
-    font-size: 11.5px;
+
+  .safety-note {
+    margin: 0 2px;
+    font-size: 13px;
     color: var(--muted);
-    text-align: center;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  /* Sticky Bottom Thumb-Zone Action Dock */
+  .dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-dock);
+    padding: 9px 14px calc(env(safe-area-inset-bottom, 10px) + 10px);
+  }
+
+  .dock-inner {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dock-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    min-height: 24px;
+  }
+
+  .dock-status-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .dock-status.ok    { color: var(--green-fg); font-weight: 600; }
+  .dock-status.warn  { color: var(--amber-fg); font-weight: 600; }
+  .dock-status.error { color: var(--red-fg); font-weight: 600; }
+  .dock-status.busy  { color: var(--accent-fg); font-weight: 600; }
+
+  .dock-link {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--accent-fg);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 12px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+
+  .dock-link:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+  }
+
+  .dock-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .btn-primary {
+    flex: 1;
+    appearance: none;
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: var(--radius-btn);
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+
+  .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+  .btn-primary.danger { background: var(--red); }
+  .btn-primary.danger:hover:not(:disabled) { background: var(--red-hover); }
+
+  .btn-primary.quiet {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .btn-primary.quiet:hover:not(:disabled) { background: var(--surface-hover); }
+
+  .btn-primary:disabled {
+    opacity: 0.62;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    appearance: none;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 46px;
+    white-space: nowrap;
+    transition: background-color 150ms ease;
+  }
+
+  .btn-secondary:hover:not(:disabled) { background: var(--surface-hover); }
+  .btn-secondary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  /* Native Confirmation Dialog */
+  dialog.confirm-dialog {
+    width: min(440px, calc(100vw - 28px));
+    padding: 0;
+    border: 1px solid var(--red-border);
+    border-radius: var(--radius-panel);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-dialog);
+  }
+
+  dialog.confirm-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.68);
+  }
+
+  .dialog-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--red-soft);
+    border-bottom: 1px solid var(--red-border);
+    color: var(--red-fg);
+  }
+
+  .dialog-head h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .dialog-body {
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .dialog-body p {
+    margin: 0 0 10px;
+    text-wrap: pretty;
+  }
+
+  .dialog-list {
+    margin: 0 0 8px;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .dialog-list strong {
+    color: var(--text);
+  }
+
+  .dialog-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  @media (max-width: 390px) {
+    .temp-cell {
+      padding: 10px 8px;
+    }
+    .temp-val {
+      font-size: 19px;
+    }
+  }
+
+  @media (max-width: 365px), (max-height: 810px) {
+    body {
+      padding-top: calc(env(safe-area-inset-top, 8px) + 6px);
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .page, .stack {
+      gap: 8px;
+    }
+    .panel-head {
+      min-height: 46px;
+      padding: 4px 8px 4px 10px;
+    }
+    .temp-strip {
+      grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.88fr) minmax(0, 0.80fr);
+    }
+    .temp-cell {
+      padding: 6px 7px;
+    }
+    .gauge-block {
+      padding: 6px 10px 7px;
+      gap: 4px;
+    }
+    .meta-cell {
+      padding: 5px 10px;
+    }
+    .sconfig-hint {
+      padding: 5px 10px;
+    }
+    .preset-label {
+      padding: 6px 4px 6px 10px;
+      min-height: 46px;
+    }
+    .spec-row {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="page">
   <header>
-    <div class="title-wrap">
+    <div class="brand">
       <h1>Marble Thermal Tuner</h1>
-      <p>POCO F5 (marble) &bull; Hot Reload &amp; Persistent</p>
+      <p>POCO F5 (marble) &middot; HyperOS</p>
     </div>
-    <div id="daemonPill" class="pill"><span class="dot"></span><span id="daemonText">Loading...</span></div>
+    <div id="daemonPill" class="status-pill num">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="daemonText">Checking&hellip;</span>
+    </div>
   </header>
 
-  <section class="telemetry">
-    <div class="stat">
-      <div class="label">Board Temp</div>
-      <div class="val" id="tBoard">--°C</div>
-      <div class="sub">VIRTUAL-SENSOR0</div>
-    </div>
-    <div class="stat">
-      <div class="label">Battery Temp</div>
-      <div class="val" id="tBat">--°C</div>
-      <div class="sub">Battery NTC</div>
-    </div>
-    <div class="stat">
-      <div class="label">CPU Max</div>
-      <div class="val" id="tCpu">--°C</div>
-      <div class="sub" id="cpuFreqs">-- / -- GHz</div>
+  <section id="unleashedBanner" class="unleashed-banner" aria-label="Unleashed safety alert">
+    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <div>
+      <strong>UNLEASHED ACTIVE &middot; External Cooler Required</strong>
+      Userspace thermal limits are bypassed. Use Safe Exit below once cooling is detached.
     </div>
   </section>
 
-  <div class="meta-bar">
-    <div>Active preset: <strong id="activeLabel">--</strong></div>
-    <div>sconfig: <strong id="sconfigVal">--</strong> &bull; Mounts: <strong id="mountCount">0</strong>/7</div>
-  </div>
+  <main class="stack">
+    <section class="panel" aria-labelledby="telemetryHeading">
+      <div class="panel-head">
+        <h2 id="telemetryHeading" class="panel-title">Live Telemetry</h2>
+        <div class="refresh-wrap">
+          <span id="updatedAt" class="updated-at num">--:--:--</span>
+          <button type="button" id="refreshBtn" class="btn-icon" aria-label="Refresh telemetry" aria-keyshortcuts="Alt+R">
+            <svg id="refreshIcon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+              <polyline points="21 3 21 9 15 9"/>
+            </svg>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
 
-  <div class="section-title">Thermal Presets</div>
-  <div class="presets" id="presetList"></div>
+      <div class="temp-strip">
+        <div class="temp-cell">
+          <div class="temp-label">Board Temp</div>
+          <div class="temp-val num" id="tBoard">--&deg;C</div>
+          <div class="temp-sub">VIRTUAL-SENSOR0</div>
+        </div>
+        <div class="temp-cell">
+          <div class="temp-label">Battery</div>
+          <div class="temp-val num" id="tBat">--&deg;C</div>
+          <div class="temp-sub">Battery NTC</div>
+        </div>
+        <div class="temp-cell">
+          <div class="temp-label">CPU Max</div>
+          <div class="temp-val num" id="tCpu">--&deg;C</div>
+          <div class="temp-sub">CPU die</div>
+        </div>
+      </div>
 
-  <div class="actions">
-    <button id="applyBtn" class="primary" onclick="applySelected()">Apply Now (Hot Reload)</button>
-    <button class="secondary" onclick="refreshStatus()">Refresh</button>
-  </div>
+      <div class="gauge-block">
+        <div class="gauge-head">
+          <span id="gaugeLabel" class="gauge-label">Board Scale</span>
+          <span id="headroomChip" class="headroom-chip num">Reading&hellip;</span>
+        </div>
+        <div class="gauge-track-wrap" aria-hidden="true">
+          <div class="gauge-track">
+            <div id="gaugeFill" class="gauge-fill"></div>
+            <div id="gaugeTicks" class="gauge-ticks"></div>
+          </div>
+        </div>
+        <div class="gauge-legend num">
+          <span id="gaugeMin">25&deg;C</span>
+          <span id="gaugeMarkers" class="gauge-markers">45&deg; dim &middot; 46&deg; CPU &middot; 48&deg; GPU &middot; 51&deg; hotplug</span>
+          <span id="gaugeMax">55&deg;C</span>
+        </div>
+      </div>
 
-  <div id="logBox" class="log-box"></div>
-  <p class="note">Selected preset persists across reboots. Battery charging protection (MONITOR-BAT) &amp; hardware hard limits always remain active.</p>
+      <div class="meta-grid">
+        <div class="meta-cell">
+          <span class="meta-key">Active Preset</span>
+          <span class="meta-val" id="activeLabel">--</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Bind Mounts</span>
+          <span class="meta-val num" id="mountLabel">0/7 stock</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Active sconfig</span>
+          <span class="meta-val num" id="sconfigVal">--</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-key">Big (cpu4) / Prime (cpu7)</span>
+          <span class="meta-val num" id="cpuFreqs">-- / -- GHz</span>
+        </div>
+      </div>
+
+      <div id="sconfigHint" class="sconfig-hint">
+        7 mounted gaming overrides engage automatically when HyperOS switches <code>sconfig</code> in-game.
+      </div>
+    </section>
+
+    <section class="presets-section" aria-labelledby="presetsHeading">
+      <div class="section-head">
+        <h2 id="presetsHeading">Thermal Presets</h2>
+        <span class="section-sub">Board triggers &middot; expand row for specs</span>
+      </div>
+
+      <div id="presetList" class="panel" role="radiogroup" aria-labelledby="presetsHeading"></div>
+    </section>
+
+    <section id="logPanel" class="log-panel" aria-labelledby="logTitle">
+      <div class="log-head">
+        <span id="logTitle" class="log-title" tabindex="-1">Hot Reload Output</span>
+        <div class="log-actions">
+          <button type="button" id="copyLogBtn" class="btn-icon">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span id="copyLogLabel">Copy</span>
+          </button>
+          <button type="button" id="dismissLogBtn" class="btn-icon" aria-label="Dismiss log">Dismiss</button>
+        </div>
+      </div>
+      <pre id="logBox" class="log-body"></pre>
+    </section>
+
+    <div id="srAnnouncer" class="sr-only" aria-live="polite"></div>
+
+    <p class="safety-note">
+      Selected preset persists across reboots. Battery charging protection (<code>MONITOR-BAT</code>), brownout protection (<code>MONITOR-BCL</code>), and kernel/hardware thermal hard limits always remain active.
+    </p>
+  </main>
 </div>
+
+<footer class="dock" aria-label="Preset apply controls">
+  <div class="dock-inner">
+    <div id="dockStatus" class="dock-status" role="status" aria-live="polite">
+      <span id="dockStatusText" class="dock-status-text">Checking module status&hellip;</span>
+      <button type="button" id="dockLogLink" class="dock-link" hidden>View log</button>
+    </div>
+    <div class="dock-buttons">
+      <button type="button" id="secondaryBtn" class="btn-secondary" hidden>Cancel</button>
+      <button type="button" id="applyBtn" class="btn-primary" aria-keyshortcuts="Alt+Enter">
+        <svg id="applySpinner" class="icon spinning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" hidden>
+          <path d="M21 12a9 9 0 1 1-6.22-8.56"/>
+        </svg>
+        <span id="applyBtnLabel">Apply Balanced (Hot Reload)</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+<dialog id="unleashedDialog" class="confirm-dialog" aria-labelledby="dialogTitle" aria-describedby="dialogDesc">
+  <div class="dialog-head">
+    <svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <h3 id="dialogTitle">Confirm Unleashed (Cooler Only)</h3>
+  </div>
+  <div class="dialog-body" id="dialogDesc">
+    <p>Unleashed bypasses all userspace CPU, GPU, display backlight, and core hotplug throttling.</p>
+    <ul class="dialog-list">
+      <li><strong>Active cooling required:</strong> attach an external fan or peltier cooler to protect battery health.</li>
+      <li><strong>Hardware limits active:</strong> stock <code>MONITOR-BAT</code> charging protection, kernel GPU <code>95&deg;C</code>, CPU LMh ~<code>95&ndash;100&deg;C</code> / <code>110&deg;C</code>, and TSENS <code>115&ndash;125&deg;C</code>.</li>
+      <li><strong>Persists across reboots</strong> until you switch back to Balanced or Stock.</li>
+    </ul>
+  </div>
+  <div class="dialog-actions">
+    <button type="button" id="dialogCancelBtn" class="btn-secondary">Cancel</button>
+    <button type="button" id="dialogConfirmBtn" class="btn-primary danger">Cooler Attached &mdash; Apply Unleashed</button>
+  </div>
+</dialog>
 
 <script>
 const MOD_DIR = "/data/adb/modules/marble_thermal_tuner";
 
 const PRESETS = [
   {
+    id: "stock",
+    name: "Stock",
+    tier: "Default",
+    tierClass: "tier-gray",
+    group: "daily",
+    ceilingBoardC: 43,
+    scaleMin: 25,
+    scaleMax: 55,
+    ticks: [37, 43, 46],
+    markersText: "37° dim · 43° Big · 46° Prime",
+    summary: "Board 43°C CPU · 37°C dim · 0/7 mounts",
+    desc: "Unmounts all overrides and restores 100% original /vendor/etc HyperOS thermal profiles.",
+    specs: [
+      ["Big (cpu4) / Prime (cpu7)", "Stock HyperOS (43°C / 46°C board)"],
+      ["GPU Limit", "Stock HyperOS"],
+      ["Display Backlight", "Dims starting at 37°C board"],
+      ["Safety & Mounts", "Stock MONITOR-BAT · 0/7 overrides"]
+    ]
+  },
+  {
     id: "balanced",
     name: "Balanced",
-    badge: "Recommended",
-    badgeClass: "blue",
-    desc: "Best for daily gaming without a cooler. Removes early throttling (15°C/43°C) and keeps battery around ~45°C.",
+    tier: "Recommended",
+    tierClass: "tier-blue",
+    group: "daily",
+    ceilingBoardC: 46,
+    scaleMin: 25,
+    scaleMax: 55,
+    ticks: [45, 46, 48, 51],
+    markersText: "45° dim · 46° CPU · 48° GPU · 51° hotplug",
+    summary: "Board 46°C CPU · 48°C GPU · 45°C dim",
+    desc: "Best for daily gaming without a cooler. Removes early HyperOS throttling and targets ~45°C\u00A0battery.",
     specs: [
-      ["CPU Big / Prime", "Full up to 46°C → 1.88 / 1.55 / 1.11 GHz"],
-      ["GPU Limit", "Full up to 48°C (Lv 1 @ 48°C)"],
-      ["Display Backlight", "Full up to 45°C"],
-      ["Safety", "Stock charging • Hotplug 51°C"]
+      ["Big (cpu4) / Prime (cpu7)", "Full to 46°C board → 1.88 / 1.55 / 1.11 GHz"],
+      ["GPU Limit", "Full to 48°C (Lv 1 @ 48°C, Lv 3 @ 50°C)"],
+      ["Display Backlight", "Full up to 45°C board"],
+      ["Safety & Mounts", "Stock MONITOR-BAT · Hotplug 51°C · 7/7 mounts"]
     ]
   },
   {
     id: "performance",
     name: "Performance",
-    badge: "High",
-    badgeClass: "amber",
-    desc: "Sustained high FPS for heavy titles. Full clocks up to 49°C before smooth step-down.",
+    tier: "High",
+    tierClass: "tier-amber",
+    group: "daily",
+    ceilingBoardC: 49,
+    scaleMin: 25,
+    scaleMax: 55,
+    ticks: [49, 50, 52.5],
+    markersText: "49° CPU/dim · 50° GPU · 52.5° hotplug",
+    summary: "Board 49°C CPU · 50°C GPU · 49°C dim",
+    desc: "Sustained high FPS for heavy titles. Holds full clocks up to 49°C board before smooth\u00A0step-down.",
     specs: [
-      ["CPU Big / Prime", "Full up to 49°C → 2.00 / 1.55 / 1.11 GHz"],
-      ["GPU Limit", "Full up to 50°C (Lv 1 @ 50°C)"],
-      ["Display Backlight", "Full up to 49°C"],
-      ["Safety", "Stock charging • Hotplug 52.5°C"]
+      ["Big (cpu4) / Prime (cpu7)", "Full to 49°C board → 2.00 / 1.55 / 1.11 GHz"],
+      ["GPU Limit", "Full to 50°C (Lv 1 @ 50°C, Lv 2 @ 52°C)"],
+      ["Display Backlight", "Full up to 49°C board"],
+      ["Safety & Mounts", "Stock MONITOR-BAT · Hotplug 52.5°C · 7/7 mounts"]
     ]
   },
   {
     id: "unleashed",
     name: "Unleashed",
-    badge: "Cooler Only",
-    badgeClass: "red",
+    tier: "Cooler Only",
+    tierClass: "tier-red",
+    group: "cooler",
     danger: true,
-    warning: "FAN COOLER REQUIRED: All userspace CPU, GPU, backlight & hotplug limits are removed. Relies strictly on kernel & hardware hard limits (GPU 95°C, CPU LMh ~95-100°C / 110°C, TSENS 115-125°C). Do NOT use long-term without active cooling.",
-    desc: "Zero userspace throttling for maximum benchmark or active-cooled gaming performance.",
+    ceilingBoardC: null,
+    scaleMin: 25,
+    scaleMax: 60,
+    ticks: [52],
+    markersText: "52° cooler check · Silicon: 95° GPU / 110° CPU",
+    summary: "No userspace throttle · Kernel/silicon limits only",
+    desc: "Zero userspace throttling for benchmarks or active-cooled gaming\u00A0sessions.",
+    warning: "External fan or peltier cooler required. Relies strictly on kernel & silicon limits (GPU 95°C, CPU LMh ~95–100°C / 110°C, TSENS 115–125°C).",
     specs: [
-      ["CPU / GPU", "No userspace limit (hardware/kernel only)"],
+      ["Big (cpu4) / Prime (cpu7)", "Userspace 90°C override (LMh ~95–100°C / 110°C)"],
+      ["GPU Limit", "Userspace 90°C override (kernel 95°C)"],
       ["Display Backlight", "No thermal dimming"],
-      ["Core Hotplug", "Disabled in userspace"],
-      ["Charging Protection", "Stock MONITOR-BAT kept active"]
-    ]
-  },
-  {
-    id: "stock",
-    name: "Stock",
-    badge: "Default",
-    badgeClass: "gray",
-    desc: "Unmounts all overrides and restores 100% original /vendor/etc HyperOS thermal profiles.",
-    specs: [
-      ["CPU Big / Prime", "Stock HyperOS (43°C / 46°C)"],
-      ["GPU Limit", "Stock HyperOS"],
-      ["Display Backlight", "Dims starting at 37°C"],
-      ["Bind Mounts", "0 files overridden"]
+      ["Safety & Mounts", "Stock MONITOR-BAT · No userspace hotplug · 7/7 mounts"]
     ]
   }
 ];
@@ -364,14 +1405,32 @@ const SCONFIG_NAMES = {
   "50": "mgame", "53": "yuanshen", "98": "per-cgame", "99": "cgame"
 };
 
-let activePreset = "balanced";
+let activePreset = null;
 let selectedPreset = "balanced";
+let applyingPreset = null;
+let isPreviewMode = false;
+let hasStatusError = false;
+let isApplying = false;
+let isRefreshing = false;
+let lastMounts = 0;
+let lastPid = "";
+let lastBoardC = null;
+let lastBatC = null;
+let lastCpuC = null;
+let lastDockNotice = null; // { tone, text, verifiedPid?, showRetry?, showLog? }
 let cbId = 0;
+
+const expandedSpecs = new Set();
+const presetNodes = new Map();
+
+function hasKsu() {
+  return typeof window.ksu !== "undefined" && typeof window.ksu.exec === "function";
+}
 
 function ksuExec(cmd) {
   return new Promise((resolve, reject) => {
-    if (typeof window.ksu === "undefined" || typeof window.ksu.exec !== "function") {
-      reject(new Error("Please open this WebUI inside KernelSU Manager."));
+    if (!hasKsu()) {
+      reject(new Error("KernelSU bridge unavailable. Open this WebUI inside KernelSU Manager."));
       return;
     }
     const cbName = "mtt_cb_" + Date.now() + "_" + (cbId++);
@@ -394,129 +1453,775 @@ function showToast(msg) {
   }
 }
 
-function setLog(msg) {
-  const el = document.getElementById("logBox");
-  el.textContent = msg;
-  el.classList.add("show");
+function nowTime() {
+  const d = new Date();
+  return [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map(v => String(v).padStart(2, "0"))
+    .join(":");
 }
 
-function renderPresets() {
-  const wrap = document.getElementById("presetList");
-  wrap.innerHTML = "";
-  PRESETS.forEach(p => {
-    const isSel = selectedPreset === p.id;
-    const isAct = activePreset === p.id;
-    const card = document.createElement("div");
-    card.className = "card" + (p.danger ? " danger" : "") + (isSel ? " active" : "");
-    card.onclick = () => { selectedPreset = p.id; renderPresets(); };
-    card.innerHTML = `
-      <div class="card-head">
-        <div class="card-title">${p.name}</div>
-        <div style="display:flex;gap:5px;align-items:center;">
-          ${isAct ? `<span class="badge active-tag${p.danger ? " danger" : ""}">Active</span>` : ""}
-          <span class="badge ${p.badgeClass}">${p.badge}</span>
-        </div>
-      </div>
-      ${p.warning ? `<div class="warn-banner">${p.warning}</div>` : ""}
-      <p class="card-desc">${p.desc}</p>
-      <div class="specs">
-        ${p.specs.map(([k,v]) => `<div class="spec-item"><span>${k}</span><b>${v}</b></div>`).join("")}
-      </div>
+function getPreset(id) {
+  return PRESETS.find(p => p.id === id) || null;
+}
+
+function setLog(msg, tone = "info", title = "Hot Reload Output") {
+  const panel = document.getElementById("logPanel");
+  const titleEl = document.getElementById("logTitle");
+  const box = document.getElementById("logBox");
+  panel.className = "log-panel show " + tone;
+  if (tone === "error" || tone === "warn") {
+    panel.setAttribute("role", "alert");
+  } else {
+    panel.removeAttribute("role");
+  }
+  titleEl.textContent = `${title} · ${nowTime()}`;
+  box.textContent = msg;
+}
+
+function parseApplyOutput(stdout) {
+  const out = {};
+  const parts = String(stdout || "").trim().split(/\s+/);
+  for (const part of parts) {
+    const idx = part.indexOf("=");
+    if (idx > 0) out[part.slice(0, idx)] = part.slice(idx + 1);
+  }
+  return out;
+}
+
+function buildPresetLadder() {
+  const container = document.getElementById("presetList");
+  container.innerHTML = "";
+  presetNodes.clear();
+
+  let dividerInserted = false;
+  PRESETS.forEach((p) => {
+    if (p.group === "cooler" && !dividerInserted) {
+      dividerInserted = true;
+      const div = document.createElement("div");
+      div.className = "ladder-divider";
+      div.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>Active Cooling Required</span>
+      `;
+      container.appendChild(div);
+    }
+
+    const row = document.createElement("div");
+    row.className = "preset-row" + (p.danger ? " is-danger" : "");
+    row.dataset.presetId = p.id;
+
+    const bar = document.createElement("div");
+    bar.className = "preset-bar";
+
+    const label = document.createElement("label");
+    label.className = "preset-label";
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "thermalPreset";
+    input.value = p.id;
+    input.className = "preset-radio-input";
+    input.addEventListener("change", () => {
+      if (!isApplying && input.checked) {
+        selectedPreset = p.id;
+        lastDockNotice = null;
+        syncUI();
+        if (p.warning) {
+          const hazardEl = row.querySelector(".staged-hazard");
+          if (hazardEl) {
+            requestAnimationFrame(() => hazardEl.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+          }
+        }
+      }
+    });
+
+    label.appendChild(input);
+
+    const ring = document.createElement("span");
+    ring.className = "radio-ring";
+    ring.setAttribute("aria-hidden", "true");
+    ring.innerHTML = `<span class="radio-dot"></span>`;
+    label.appendChild(ring);
+
+    const main = document.createElement("span");
+    main.className = "preset-main";
+    main.innerHTML = `
+      <span class="preset-top">
+        <span class="preset-name">${p.name}</span>
+        <span class="badge state-active${p.danger ? " danger" : ""}" data-role="active-badge" hidden>Active</span>
+        <span class="badge state-pending${p.danger ? " danger" : ""}" data-role="pending-badge" hidden>Pending</span>
+        <span class="badge ${p.tierClass}">${p.tier}</span>
+      </span>
+      <span class="preset-summary num">${p.summary}</span>
     `;
-    wrap.appendChild(card);
+    label.appendChild(main);
+
+    const specsBtn = document.createElement("button");
+    specsBtn.type = "button";
+    specsBtn.className = "btn-specs";
+    specsBtn.setAttribute("aria-expanded", "false");
+    specsBtn.setAttribute("aria-controls", `details-${p.id}`);
+    specsBtn.setAttribute("aria-label", `Toggle specs for ${p.name}`);
+    specsBtn.title = `Show ${p.name} specs`;
+    specsBtn.innerHTML = `
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    `;
+    specsBtn.addEventListener("click", () => {
+      const opening = !expandedSpecs.has(p.id);
+      if (opening) {
+        expandedSpecs.add(p.id);
+      } else {
+        expandedSpecs.delete(p.id);
+      }
+      syncUI();
+      if (opening) {
+        requestAnimationFrame(() => details.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+      }
+    });
+
+    bar.appendChild(label);
+    bar.appendChild(specsBtn);
+    row.appendChild(bar);
+
+    if (p.warning) {
+      const hazard = document.createElement("div");
+      hazard.className = "staged-hazard";
+      hazard.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span>${p.warning}</span>
+      `;
+      row.appendChild(hazard);
+    }
+
+    const details = document.createElement("div");
+    details.className = "preset-details";
+    details.id = `details-${p.id}`;
+    details.hidden = true;
+    details.innerHTML = `
+      <p class="preset-desc">${p.desc}</p>
+      <dl class="spec-list">
+        ${p.specs.map(([k, v]) => `<div class="spec-row"><dt>${k}</dt><dd class="num">${v}</dd></div>`).join("")}
+      </dl>
+    `;
+    row.appendChild(details);
+    container.appendChild(row);
+
+    presetNodes.set(p.id, {
+      row,
+      input,
+      specsBtn,
+      details,
+      activeBadge: main.querySelector('[data-role="active-badge"]'),
+      pendingBadge: main.querySelector('[data-role="pending-badge"]')
+    });
   });
-  const btn = document.getElementById("applyBtn");
-  const targetObj = PRESETS.find(x => x.id === selectedPreset);
-  btn.className = "primary" + (targetObj && targetObj.danger ? " danger" : "");
-  btn.textContent = selectedPreset === activePreset
-    ? `Reload "${targetObj.name}" (Hot Reload)`
-    : `Apply "${targetObj.name}" (Hot Reload)`;
+}
+
+function updateGaugeUI() {
+  const chip = document.getElementById("headroomChip");
+  const fill = document.getElementById("gaugeFill");
+  const ticksEl = document.getElementById("gaugeTicks");
+  const minEl = document.getElementById("gaugeMin");
+  const maxEl = document.getElementById("gaugeMax");
+  const markersEl = document.getElementById("gaugeMarkers");
+  const tBoardEl = document.getElementById("tBoard");
+  const tBatEl = document.getElementById("tBat");
+  const tCpuEl = document.getElementById("tCpu");
+
+  tBoardEl.classList.remove("warm", "hot");
+  tBatEl.classList.remove("warm", "hot");
+  tCpuEl.classList.remove("warm", "hot");
+
+  const refPreset = getPreset(activePreset || selectedPreset) || PRESETS[1];
+  minEl.textContent = `${refPreset.scaleMin}°C`;
+  maxEl.textContent = `${refPreset.scaleMax}°C`;
+  markersEl.textContent = refPreset.markersText;
+
+  // Render calibrated tick markers for the reference preset
+  ticksEl.innerHTML = refPreset.ticks.map(temp => {
+    const pct = Math.max(0, Math.min(100, ((temp - refPreset.scaleMin) / (refPreset.scaleMax - refPreset.scaleMin)) * 100));
+    return `<span class="gauge-tick" style="left:${pct.toFixed(1)}%"></span>`;
+  }).join("");
+
+  if (isPreviewMode || hasStatusError || lastBoardC === null) {
+    chip.className = "headroom-chip num";
+    chip.textContent = hasStatusError ? "Sensor error" : (isPreviewMode ? `${refPreset.name} scale (Preview)` : "Reading…");
+    fill.className = "gauge-fill";
+    fill.style.width = "0%";
+    return;
+  }
+
+  if (lastCpuC !== null && lastCpuC >= 95) {
+    tCpuEl.classList.add("hot");
+  } else if (lastCpuC !== null && lastCpuC >= 85) {
+    tCpuEl.classList.add("warm");
+  }
+
+  const pct = Math.max(4, Math.min(100, ((lastBoardC - refPreset.scaleMin) / (refPreset.scaleMax - refPreset.scaleMin)) * 100));
+  fill.style.width = pct.toFixed(1) + "%";
+
+  if (refPreset.id === "unleashed") {
+    const batHot = lastBatC !== null && lastBatC >= 46;
+    const boardHot = lastBoardC >= 52;
+    if (batHot || boardHot) {
+      chip.className = "headroom-chip hot num";
+      chip.textContent = "High temp · Check cooler";
+      fill.className = "gauge-fill hot";
+      if (boardHot) tBoardEl.classList.add("hot");
+      if (batHot) tBatEl.classList.add("hot");
+    } else {
+      chip.className = "headroom-chip warm num";
+      chip.textContent = "Hardware limits only";
+      fill.className = "gauge-fill warm";
+    }
+    return;
+  }
+
+  const ceiling = refPreset.ceilingBoardC;
+  const delta = ceiling - lastBoardC;
+  if (delta <= 2) {
+    chip.className = "headroom-chip hot num";
+    chip.textContent = delta <= 0 ? `At ${ceiling}°C board limit` : `${delta.toFixed(1)}°C to ${ceiling}°C board`;
+    fill.className = "gauge-fill hot";
+    tBoardEl.classList.add("hot");
+  } else if (delta <= 6) {
+    chip.className = "headroom-chip warm num";
+    chip.textContent = `${delta.toFixed(1)}°C to ${ceiling}°C board`;
+    fill.className = "gauge-fill warm";
+    tBoardEl.classList.add("warm");
+  } else {
+    chip.className = "headroom-chip cool num";
+    chip.textContent = `${delta.toFixed(1)}°C to ${ceiling}°C board`;
+    fill.className = "gauge-fill";
+  }
+
+  if (lastBatC !== null && lastBatC >= 45) {
+    tBatEl.classList.add("hot");
+  } else if (lastBatC !== null && lastBatC >= 41) {
+    tBatEl.classList.add("warm");
+  }
+}
+
+function syncUI() {
+  const effectiveSelected = getPreset(selectedPreset) || PRESETS[1];
+  const applyingObj = getPreset(applyingPreset) || effectiveSelected;
+  const activeObj = getPreset(activePreset);
+  const hasChange = !isPreviewMode && !hasStatusError && activeObj && selectedPreset !== activePreset;
+  const isUnleashedActiveSame = !isPreviewMode && !hasStatusError && activePreset === "unleashed" && selectedPreset === "unleashed";
+
+  for (const p of PRESETS) {
+    const node = presetNodes.get(p.id);
+    if (!node) continue;
+    const isSel = selectedPreset === p.id;
+    const isAct = !isPreviewMode && !hasStatusError && activePreset === p.id;
+    const isPending = isSel && !isAct && !isPreviewMode && !hasStatusError;
+    const isExpanded = expandedSpecs.has(p.id);
+
+    node.row.classList.toggle("is-selected", isSel);
+    node.row.classList.toggle("is-active", isAct);
+    node.row.classList.toggle("is-pending", isPending);
+
+    node.input.checked = isSel;
+    node.input.disabled = isApplying;
+
+    node.activeBadge.hidden = !isAct;
+    node.pendingBadge.hidden = !isPending;
+
+    node.specsBtn.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    node.details.hidden = !isExpanded;
+  }
+
+  // Persistent Unleashed active banner (compact strip; Safe Exit lives in thumb-zone dock)
+  const banner = document.getElementById("unleashedBanner");
+  banner.classList.toggle("show", !isPreviewMode && !hasStatusError && activePreset === "unleashed");
+
+  // Dock controls
+  const dockStatus = document.getElementById("dockStatus");
+  const dockStatusText = document.getElementById("dockStatusText");
+  const dockLogLink = document.getElementById("dockLogLink");
+  const secondaryBtn = document.getElementById("secondaryBtn");
+  const applyBtn = document.getElementById("applyBtn");
+  const applySpinner = document.getElementById("applySpinner");
+  const applyBtnLabel = document.getElementById("applyBtnLabel");
+
+  dockLogLink.hidden = true;
+  secondaryBtn.hidden = true;
+  secondaryBtn.dataset.action = "";
+  applyBtn.dataset.action = "apply";
+  applySpinner.hidden = true;
+
+  if (isApplying) {
+    dockStatus.className = "dock-status busy";
+    dockStatusText.textContent = `Restarting mi_thermald & applying ${applyingObj.name}…`;
+    applyBtn.disabled = true;
+    applyBtn.className = "btn-primary" + (applyingObj.danger ? " danger" : "");
+    applySpinner.hidden = false;
+    applyBtnLabel.textContent = `Applying ${applyingObj.name}…`;
+    updateGaugeUI();
+    return;
+  }
+
+  if (isPreviewMode) {
+    dockStatus.className = "dock-status warn";
+    dockStatusText.textContent = "Preview Mode · Open inside KernelSU Manager to apply";
+    applyBtn.disabled = true;
+    applyBtn.className = "btn-primary quiet";
+    applyBtnLabel.textContent = `Preview Only (${effectiveSelected.name})`;
+    updateGaugeUI();
+    return;
+  }
+
+  if (hasStatusError) {
+    dockStatus.className = "dock-status error";
+    dockStatusText.textContent = "Failed to read module status from status.sh";
+    dockLogLink.hidden = false;
+    applyBtn.disabled = false;
+    applyBtn.dataset.action = "retry-status";
+    applyBtn.className = "btn-primary";
+    applyBtnLabel.textContent = "Retry Status Check";
+    updateGaugeUI();
+    return;
+  }
+
+  const isRetryState = Boolean(lastDockNotice && lastDockNotice.showRetry);
+
+  if (lastDockNotice) {
+    dockStatus.className = "dock-status " + lastDockNotice.tone;
+    dockStatusText.textContent = lastDockNotice.text;
+    dockLogLink.hidden = !lastDockNotice.showLog;
+  } else if (hasChange) {
+    dockStatus.className = "dock-status" + (effectiveSelected.danger ? " error" : "");
+    dockStatusText.textContent = `Staged: ${activeObj.name} → ${effectiveSelected.name}`;
+  } else if (isUnleashedActiveSame) {
+    dockStatus.className = "dock-status error";
+    dockStatusText.textContent = `Unleashed active · ${lastMounts}/7 mounts · Cooler required`;
+  } else if (activeObj) {
+    const mountDesc = activePreset === "stock" ? `${lastMounts}/7 stock` : `${lastMounts}/7 mounts`;
+    dockStatus.className = "dock-status";
+    dockStatusText.textContent = `${activeObj.name} active · ${mountDesc}`;
+  } else {
+    dockStatus.className = "dock-status";
+    dockStatusText.textContent = "Select a preset to apply via Hot Reload.";
+  }
+
+  if (hasChange) {
+    secondaryBtn.hidden = false;
+    secondaryBtn.disabled = false;
+    secondaryBtn.dataset.action = "cancel";
+    secondaryBtn.textContent = "Cancel";
+  } else if (isUnleashedActiveSame && !isRetryState) {
+    secondaryBtn.hidden = false;
+    secondaryBtn.disabled = false;
+    secondaryBtn.dataset.action = "reload-unleashed";
+    secondaryBtn.textContent = "Reload Unleashed";
+  }
+
+  applyBtn.disabled = false;
+  if (isRetryState) {
+    applyBtn.className = "btn-primary" + (effectiveSelected.danger ? " danger" : "");
+    applyBtnLabel.textContent = activePreset === selectedPreset
+      ? `Retry Reload ${effectiveSelected.name}`
+      : `Retry Apply ${effectiveSelected.name}`;
+  } else if (isUnleashedActiveSame) {
+    applyBtn.dataset.action = "safe-exit";
+    applyBtn.className = "btn-primary";
+    applyBtnLabel.textContent = "Safe Exit → Balanced";
+  } else if (effectiveSelected.danger) {
+    applyBtn.className = "btn-primary danger";
+    applyBtnLabel.textContent = "Review & Apply Unleashed";
+  } else if (activePreset === selectedPreset) {
+    applyBtn.className = "btn-primary quiet";
+    applyBtnLabel.textContent = `Reload ${effectiveSelected.name} (Hot Reload)`;
+  } else {
+    applyBtn.className = "btn-primary";
+    applyBtnLabel.textContent = `Apply ${effectiveSelected.name} (Hot Reload)`;
+  }
+
+  updateGaugeUI();
 }
 
 function fmtTemp(mc) {
   const n = Number(mc);
-  if (!n || isNaN(n)) return "--°C";
-  return (n / 1000).toFixed(1) + "°C";
+  if (!n || isNaN(n)) return { text: "--°C", c: null };
+  const c = n / 1000;
+  return { text: c.toFixed(1) + "°C", c };
 }
+
 function fmtDeci(dc) {
   const n = Number(dc);
-  if (!n || isNaN(n)) return "--°C";
-  return (n / 10).toFixed(1) + "°C";
+  if (!n || isNaN(n)) return { text: "--°C", c: null };
+  const c = n / 10;
+  return { text: c.toFixed(1) + "°C", c };
 }
+
 function fmtGhz(khz) {
   const n = Number(khz);
   if (!n || isNaN(n)) return "--";
   return (n / 1000000).toFixed(2);
 }
 
-async function refreshStatus(syncSelection = false) {
+async function refreshStatus(syncSelection = false, manual = false, ignoreHidden = false) {
+  if (isApplying || isRefreshing) return;
+  if (!manual && !ignoreHidden && document.hidden) return;
+
+  isRefreshing = true;
+  const refreshBtn = document.getElementById("refreshBtn");
+  const refreshIcon = document.getElementById("refreshIcon");
+  if (manual) {
+    refreshBtn.disabled = true;
+    refreshIcon.classList.add("spinning");
+  }
+
+  const pill = document.getElementById("daemonPill");
+  const dText = document.getElementById("daemonText");
+  const hintEl = document.getElementById("sconfigHint");
+
   try {
-    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/status.sh`);
-    if (res.errno !== 0) {
-      setLog("Failed to read status: " + (res.stderr || res.stdout));
+    if (!hasKsu()) {
+      isPreviewMode = true;
+      hasStatusError = false;
+      activePreset = null;
+      lastBoardC = null;
+      lastBatC = null;
+      lastCpuC = null;
+      pill.className = "status-pill warn num";
+      dText.textContent = "Preview Mode";
+      document.getElementById("activeLabel").textContent = "Preview";
+      document.getElementById("mountLabel").textContent = "-- / 7";
+      document.getElementById("sconfigVal").textContent = "--";
+      hintEl.className = "sconfig-hint";
+      hintEl.textContent = "Preview Mode — live sensor readings, sconfig mapping, and bind-mount checks run inside KernelSU Manager.";
+      document.getElementById("updatedAt").textContent = nowTime();
+      if (manual) {
+        setLog("KernelSU bridge unavailable. Open this WebUI inside KernelSU Manager.", "warn", "Preview Mode");
+      }
+      syncUI();
       return;
     }
-    const data = JSON.parse(res.stdout.trim());
+
+    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/status.sh`);
+    if (res.errno !== 0) {
+      throw new Error(`status.sh exited with code ${res.errno}:\n${(res.stderr || res.stdout || "No output").trim()}`);
+    }
+
+    let data;
+    try {
+      data = JSON.parse(res.stdout.trim());
+    } catch (parseErr) {
+      throw new Error(`Invalid JSON from status.sh:\n${res.stdout.trim() || "(empty)"}\n${res.stderr.trim()}`);
+    }
+
+    isPreviewMode = false;
+    hasStatusError = false;
+    const prevPreset = activePreset;
     activePreset = data.preset || "stock";
+    lastMounts = Number(data.mounted) || 0;
+    lastPid = data.pid ? String(data.pid) : "";
     if (syncSelection) selectedPreset = activePreset;
 
-    document.getElementById("tBoard").textContent = fmtTemp(data.board_mc);
-    document.getElementById("tBat").textContent = fmtDeci(data.bat_dc);
-    document.getElementById("tCpu").textContent = fmtTemp(data.cpu_mc);
+    // Reconcile stale verified dock notice if daemon state drifted on later polls
+    if (lastDockNotice && lastDockNotice.tone === "ok") {
+      if (!lastPid || (lastDockNotice.verifiedPid && lastPid !== lastDockNotice.verifiedPid) || (prevPreset && prevPreset !== activePreset)) {
+        lastDockNotice = null;
+      }
+    }
+
+    const board = fmtTemp(data.board_mc);
+    const bat = fmtDeci(data.bat_dc);
+    const cpu = fmtTemp(data.cpu_mc);
+    lastBoardC = board.c;
+    lastBatC = bat.c;
+    lastCpuC = cpu.c;
+
+    document.getElementById("tBoard").textContent = board.text;
+    document.getElementById("tBat").textContent = bat.text;
+    document.getElementById("tCpu").textContent = cpu.text;
     document.getElementById("cpuFreqs").textContent = `${fmtGhz(data.cpu4_khz)} / ${fmtGhz(data.cpu7_khz)} GHz`;
 
-    const presetObj = PRESETS.find(x => x.id === activePreset);
+    const presetObj = getPreset(activePreset);
     document.getElementById("activeLabel").textContent = presetObj ? presetObj.name : activePreset;
-    const scName = SCONFIG_NAMES[String(data.sconfig)] || "";
-    document.getElementById("sconfigVal").textContent = scName ? `${data.sconfig} (${scName})` : data.sconfig;
-    document.getElementById("mountCount").textContent = data.mounted;
+    document.getElementById("mountLabel").textContent = activePreset === "stock"
+      ? `${lastMounts}/7 stock`
+      : `${lastMounts}/7 mounts`;
 
-    const pill = document.getElementById("daemonPill");
-    const dText = document.getElementById("daemonText");
-    if (data.pid) {
-      pill.className = "pill";
-      dText.textContent = `mi_thermald #${data.pid}`;
+    const scStr = String(data.sconfig ?? "0");
+    const scName = SCONFIG_NAMES[scStr] || "";
+    document.getElementById("sconfigVal").textContent = scName ? `${scStr} (${scName})` : scStr;
+
+    hintEl.className = "sconfig-hint";
+    if (!lastPid) {
+      hintEl.className = "sconfig-hint warn";
+      hintEl.textContent = "mi_thermald is stopped — tap Reload below to restart the thermal daemon.";
+    } else if (activePreset !== "stock" && lastMounts < 7) {
+      hintEl.className = "sconfig-hint warn";
+      hintEl.textContent = `Only ${lastMounts}/7 gaming configs are mounted — tap Reload to re-bind all 7 files.`;
+    } else if (activePreset === "stock" && lastMounts > 0) {
+      hintEl.className = "sconfig-hint warn";
+      hintEl.textContent = `${lastMounts}/7 overrides are still mounted — tap Reload Stock to finish unmounting.`;
+    } else if (activePreset === "stock") {
+      hintEl.textContent = "Stock mode active — all 7 /vendor/etc gaming profiles are unmounted.";
+    } else if (scStr === "0") {
+      hintEl.textContent = "sconfig is 0 (normal) outside games — your 7 mounted overrides engage automatically in-game.";
     } else {
-      pill.className = "pill warn";
+      hintEl.textContent = `Active HyperOS profile: ${scName || scStr} (${lastMounts}/7 gaming overrides mounted).`;
+    }
+
+    if (lastPid) {
+      pill.className = "status-pill ok num";
+      dText.textContent = `mi_thermald #${lastPid}`;
+    } else {
+      pill.className = "status-pill warn num";
       dText.textContent = "mi_thermald stopped";
     }
-    renderPresets();
+
+    document.getElementById("updatedAt").textContent = nowTime();
+    syncUI();
   } catch (e) {
-    document.getElementById("daemonText").textContent = "Preview Mode";
-    setLog(e.message);
+    isPreviewMode = false;
+    hasStatusError = true;
+    lastBoardC = null;
+    lastBatC = null;
+    lastCpuC = null;
+    document.getElementById("tBoard").textContent = "--°C";
+    document.getElementById("tBat").textContent = "--°C";
+    document.getElementById("tCpu").textContent = "--°C";
+    document.getElementById("activeLabel").textContent = "--";
+    document.getElementById("mountLabel").textContent = "-- / 7";
+    document.getElementById("sconfigVal").textContent = "--";
+    document.getElementById("cpuFreqs").textContent = "-- / -- GHz";
+    hintEl.className = "sconfig-hint error";
+    hintEl.textContent = "Unable to read status.sh — tap View log for details or Retry Status Check.";
+    pill.className = "status-pill error num";
+    dText.textContent = "Status Error";
+    document.getElementById("updatedAt").textContent = nowTime();
+    setLog(e.message + "\n\nRecovery: Verify KernelSU root grant and module files under " + MOD_DIR + ", then tap Retry Status Check.", "error", "Status Read Error");
+    syncUI();
+  } finally {
+    isRefreshing = false;
+    refreshBtn.disabled = false;
+    refreshIcon.classList.remove("spinning");
   }
 }
 
-async function applySelected() {
-  const btn = document.getElementById("applyBtn");
-  btn.disabled = true;
-  btn.textContent = "Applying & restarting mi_thermald...";
+function requestApply(presetId = selectedPreset) {
+  if (isApplying || isPreviewMode) return;
+  selectedPreset = presetId;
+  syncUI();
+
+  if (presetId === "unleashed") {
+    const dlg = document.getElementById("unleashedDialog");
+    if (typeof dlg.showModal === "function") {
+      dlg.showModal();
+      document.getElementById("dialogCancelBtn").focus();
+      return;
+    }
+  }
+  executeApply(presetId);
+}
+
+async function executeApply(presetId) {
+  if (isApplying || isPreviewMode) return;
+  const targetObj = getPreset(presetId);
+  if (!targetObj) return;
+
+  isApplying = true;
+  selectedPreset = presetId;
+  applyingPreset = presetId;
+  lastDockNotice = null;
+
+  const pill = document.getElementById("daemonPill");
+  const dText = document.getElementById("daemonText");
+  pill.className = "status-pill busy num";
+  dText.textContent = "Restarting…";
+  syncUI();
+
   try {
-    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/apply_preset.sh ${selectedPreset} hot`);
-    const out = (res.stdout + " " + res.stderr).trim();
-    setLog(out || "Done.");
-    if (res.errno === 0 && res.stdout.includes("OK ")) {
-      activePreset = selectedPreset;
-      const obj = PRESETS.find(x => x.id === activePreset);
-      showToast(`"${obj.name}" applied & saved for reboot!`);
+    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/apply_preset.sh ${presetId} hot`);
+    const combined = [res.stdout.trim(), res.stderr.trim()].filter(Boolean).join("\n") || "No output returned.";
+    const parsed = parseApplyOutput(res.stdout);
+    const expectedMounts = presetId === "stock" ? 0 : 7;
+    const mountedNum = Number(parsed.mounted);
+    const hasPid = Boolean(parsed.pid && parsed.pid !== "none");
+    const hasWarn = /WARN:/i.test(res.stderr) || /WARN:/i.test(res.stdout);
+    const okPrefix = res.errno === 0 && res.stdout.trim().startsWith("OK ");
+
+    if (okPrefix && mountedNum === expectedMounts && hasPid && !hasWarn) {
+      activePreset = presetId;
+      selectedPreset = presetId;
+      lastMounts = mountedNum;
+      lastPid = String(parsed.pid);
+      lastDockNotice = {
+        tone: "ok",
+        text: `Verified: ${targetObj.name} · ${mountedNum}/7 mounts · PID #${parsed.pid}`,
+        verifiedPid: String(parsed.pid),
+        showRetry: false,
+        showLog: true
+      };
+      setLog(combined, "ok", "Hot Reload Verified");
+      showToast(`"${targetObj.name}" applied & saved for reboot!`);
+    } else if (okPrefix) {
+      const reasons = [];
+      if (mountedNum !== expectedMounts) reasons.push(`mounted ${isNaN(mountedNum) ? "?" : mountedNum}/${expectedMounts}`);
+      if (!hasPid) reasons.push("PID missing");
+      if (hasWarn) reasons.push("bind-mount warning");
+      lastDockNotice = {
+        tone: "warn",
+        text: `Warning: ${reasons.join(", ")}`,
+        showRetry: true,
+        showLog: true
+      };
+      setLog(combined + "\n\nRecovery: Tap Retry below to re-bind all 7 /vendor/etc configs and restart mi_thermald.", "warn", "Partial Hot Reload Warning");
+      showToast("Applied with warnings — check log.");
     } else {
-      showToast("Failed to apply preset. Check log below.");
+      lastDockNotice = {
+        tone: "error",
+        text: `Apply failed (exit ${res.errno})`,
+        showRetry: true,
+        showLog: true
+      };
+      setLog(combined + "\n\nRecovery: Verify KernelSU root access and module files under " + MOD_DIR + ", then tap Retry.", "error", "Hot Reload Failed");
+      showToast("Failed to apply preset. Check log.");
     }
   } catch (e) {
-    setLog("Error: " + e.message);
+    lastDockNotice = {
+      tone: "error",
+      text: "Error: " + e.message,
+      showRetry: true,
+      showLog: true
+    };
+    setLog("Error: " + e.message + "\n\nRecovery: Reopen WebUI from KernelSU Manager and tap Retry.", "error", "Hot Reload Error");
     showToast("Error: " + e.message);
   } finally {
-    btn.disabled = false;
-    await refreshStatus(false);
+    isApplying = false;
+    applyingPreset = null;
+    await refreshStatus(false, false, true);
+    syncUI();
   }
 }
+
+async function copyLog() {
+  const text = document.getElementById("logBox").textContent || "";
+  if (!text) return;
+  const label = document.getElementById("copyLogLabel");
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    label.textContent = "Copied";
+    document.getElementById("srAnnouncer").textContent = "Log copied to clipboard.";
+    setTimeout(() => {
+      label.textContent = "Copy";
+      document.getElementById("srAnnouncer").textContent = "";
+    }, 1600);
+  } catch (_) {
+    label.textContent = "Copy failed";
+    document.getElementById("srAnnouncer").textContent = "Failed to copy log.";
+    setTimeout(() => {
+      label.textContent = "Copy";
+      document.getElementById("srAnnouncer").textContent = "";
+    }, 1600);
+  }
+}
+
+// Event bindings
+document.getElementById("refreshBtn").addEventListener("click", () => refreshStatus(false, true));
+
+document.getElementById("applyBtn").addEventListener("click", () => {
+  const action = document.getElementById("applyBtn").dataset.action;
+  if (action === "retry-status") {
+    refreshStatus(false, true);
+  } else if (action === "safe-exit") {
+    executeApply("balanced");
+  } else {
+    requestApply(selectedPreset);
+  }
+});
+
+document.getElementById("secondaryBtn").addEventListener("click", () => {
+  const action = document.getElementById("secondaryBtn").dataset.action;
+  if (action === "cancel" && activePreset) {
+    selectedPreset = activePreset;
+    lastDockNotice = null;
+    syncUI();
+  } else if (action === "reload-unleashed") {
+    requestApply("unleashed");
+  }
+});
+
+document.getElementById("dockLogLink").addEventListener("click", () => {
+  const panel = document.getElementById("logPanel");
+  const titleEl = document.getElementById("logTitle");
+  panel.scrollIntoView({ behavior: "smooth", block: "center" });
+  titleEl.focus({ preventScroll: true });
+});
+
+document.getElementById("copyLogBtn").addEventListener("click", copyLog);
+document.getElementById("dismissLogBtn").addEventListener("click", () => {
+  const panel = document.getElementById("logPanel");
+  panel.className = "log-panel";
+  panel.removeAttribute("role");
+  if (lastDockNotice) {
+    lastDockNotice = { ...lastDockNotice, showLog: false };
+    syncUI();
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && !isApplying) {
+    refreshStatus(false, false);
+  }
+});
+
+const unleashedDialog = document.getElementById("unleashedDialog");
+document.getElementById("dialogCancelBtn").addEventListener("click", () => unleashedDialog.close());
+document.getElementById("dialogConfirmBtn").addEventListener("click", () => {
+  unleashedDialog.close();
+  executeApply("unleashed");
+});
+unleashedDialog.addEventListener("click", (e) => {
+  if (e.target === unleashedDialog) unleashedDialog.close();
+});
+
+// Keyboard shortcuts for power users
+document.addEventListener("keydown", (e) => {
+  if (unleashedDialog.open) return;
+  if (e.altKey && (e.key === "r" || e.key === "R")) {
+    e.preventDefault();
+    refreshStatus(false, true);
+  } else if (e.altKey && e.key === "Enter") {
+    e.preventDefault();
+    const btn = document.getElementById("applyBtn");
+    if (!btn.disabled) btn.click();
+  }
+});
 
 if (window.ksu && typeof window.ksu.enableEdgeToEdge === "function") {
   try { window.ksu.enableEdgeToEdge(true); } catch (_) {}
 }
-renderPresets();
-refreshStatus(true);
-setInterval(() => refreshStatus(false), 3000);
+
+buildPresetLadder();
+syncUI();
+refreshStatus(true, false);
+setInterval(() => refreshStatus(false, false), 3000);
 </script>
 </body>
 </html>
