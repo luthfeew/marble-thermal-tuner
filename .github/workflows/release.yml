@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to create or update (e.g. v1.3)'
+        description: 'Release tag to create or update (e.g. v1.4)'
         required: true
-        default: 'v1.3'
+        default: 'v1.4'
 
 permissions:
   contents: write
@@ -29,22 +29,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ inputs.tag || github.ref_name }}"
-          VERSION=$(grep -m1 '^version=' module.prop | cut -d= -f2)
+          VERSION=$(grep -m1 '^version=' module.prop | cut -d= -f2 | tr -d '\r\n')
           ZIP="Marble-Thermal-Tuner-${VERSION}.zip"
-          cat > /tmp/release_notes.md <<'NOTES_EOF'
-          ## Marble Thermal Tuner (POCO F5 / marble — HyperOS)
 
-          ### Features
-          - **4 clean presets** in KernelSU WebUI: **Balanced** *(Recommended)*, **Performance**, **Unleashed** *(Cooler Only)*, and **Stock**
-          - **Instant Hot Reload (no reboot)** via PID 1 mount namespace bind-mounts + `mi_thermald` restart
-          - **KernelSU Hot Install** support (no reboot needed on install with KernelSU 32700+)
-          - **Persistent across reboots** (`post-fs-data.sh`, `service.sh`, `boot-completed.sh`)
-          - **Unleashed mode**: explicitly overrides all userspace thermal sections at `90°C+` so `mi_thermald` never falls back to `thermal-normal.conf`
-          - Battery charging protection (`MONITOR-BAT`) & kernel/hardware hard limits remain active in all presets
-          NOTES_EOF
-          sed -i 's/^          //' /tmp/release_notes.md
+          awk -v ver="## ${VERSION}" '
+            $0 == ver { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > /tmp/release_notes.md
+
+          if [ ! -s /tmp/release_notes.md ]; then
+            echo "Marble Thermal Tuner ${VERSION} for POCO F5 / Redmi Note 12 Turbo (marble) on HyperOS." > /tmp/release_notes.md
+          fi
+
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$ZIP" --clobber
+            gh release edit "$TAG" --title "Marble Thermal Tuner ${VERSION}" --notes-file /tmp/release_notes.md
           else
             gh release create "$TAG" "$ZIP" --title "Marble Thermal Tuner ${VERSION}" --notes-file /tmp/release_notes.md
           fi

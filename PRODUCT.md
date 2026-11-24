@@ -48,7 +48,7 @@ Marble Thermal Tuner (HyperOS) gives `marble` users immediate, systemless contro
 
 - **Repository sources:**
   - `README.md` — full feature list, preset comparison table, safety invariants, and install/uninstall flows.
-  - `module.prop` — module identity (`v1.3`, `versionCode=130`).
+  - `module.prop` — module identity (`v1.4`, `versionCode=140`, with `updateJson` for KernelSU in-app updates).
   - `webroot/index.html` — complete current WebUI implementation with exact preset copy, `SCONFIG_NAMES` map, telemetry formatting, and `ksuExec` bridge.
   - `status.sh` & `apply_preset.sh` — authoritative JSON telemetry schema and Hot Reload execution contract.
   - `presets/{balanced,performance,unleashed}/thermal-*.conf` — the 7 encrypted Xiaomi thermal configs per custom preset.

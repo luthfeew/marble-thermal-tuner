@@ -4,8 +4,9 @@ SKIPUNZIP=0
 DEVICE=$(getprop ro.product.vendor.device)
 [ -z "$DEVICE" ] && DEVICE=$(getprop ro.product.device)
 
+VERSION=$(grep -m1 '^version=' "$MODPATH/module.prop" 2>/dev/null | cut -d= -f2 | tr -d '\r\n')
 ui_print "========================================="
-ui_print "  Marble Thermal Tuner v1.3 (HyperOS)    "
+ui_print "  Marble Thermal Tuner ${VERSION:-v1.4} (HyperOS)"
 ui_print "========================================="
 ui_print "- Detected device: ${DEVICE:-unknown}"
 

@@ -1,6 +1,7 @@
 id=marble_thermal_tuner
 name=Marble Thermal Tuner (HyperOS)
-version=v1.3
-versionCode=130
+version=v1.4
+versionCode=140
 author=luthfeew
-description=Thermal preset controller for POCO F5 (marble) with KernelSU WebUI, instant Hot Reload, and persistent boot restore (Balanced, Performance, Unleashed, Stock).
+description=Thermal preset controller for POCO F5 (marble) with KernelSU WebUI, instant Hot Reload, and reboot persistence.
+updateJson=https://raw.githubusercontent.com/luthfeew/marble-thermal-tuner/main/update.json
