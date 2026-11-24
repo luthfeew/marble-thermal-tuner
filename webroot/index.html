@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Marble Thermal Tuner</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #181c23;
+    --surface-2: #202631;
+    --border: rgba(255,255,255,0.08);
+    --text: #eef1f6;
+    --muted: #98a2b3;
+    --accent: #3b82f6;
+    --accent-soft: rgba(59,130,246,0.16);
+    --green: #22c55e;
+    --green-soft: rgba(34,197,94,0.15);
+    --amber: #f59e0b;
+    --amber-soft: rgba(245,158,11,0.16);
+    --red: #ef4444;
+    --red-soft: rgba(239,68,68,0.16);
+    --red-border: rgba(239,68,68,0.38);
+    --radius: 18px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f6fa;
+      --surface: #ffffff;
+      --surface-2: #eef2f7;
+      --border: rgba(15,23,42,0.09);
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-soft: rgba(37,99,235,0.11);
+      --green: #16a34a;
+      --green-soft: rgba(22,163,74,0.12);
+      --amber: #d97706;
+      --amber-soft: rgba(217,119,6,0.12);
+      --red: #dc2626;
+      --red-soft: rgba(220,38,38,0.11);
+      --red-border: rgba(220,38,38,0.32);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    padding: calc(env(safe-area-inset-top, 12px) + 14px) 16px calc(env(safe-area-inset-bottom, 16px) + 24px);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .container { max-width: 560px; margin: 0 auto; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+  .title-wrap h1 {
+    font-size: 21px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .title-wrap p {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 2px 0 0;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--green-soft);
+    color: var(--green);
+    white-space: nowrap;
+  }
+  .pill.warn { background: var(--amber-soft); color: var(--amber); }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+  }
+
+  .telemetry {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 11px 12px;
+  }
+  .stat .label { font-size: 11px; color: var(--muted); }
+  .stat .val { font-size: 18px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .stat .sub { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+
+  .meta-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 9px 12px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .meta-bar strong { color: var(--text); font-weight: 600; }
+
+  .section-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin: 0 0 10px 2px;
+  }
+
+  .presets { display: flex; flex-direction: column; gap: 11px; }
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 15px;
+    transition: border-color 0.18s ease, transform 0.12s ease;
+    cursor: pointer;
+  }
+  .card:active { transform: scale(0.988); }
+  .card.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .card.danger.active {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-soft);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+  .badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .badge.blue { background: var(--accent-soft); color: var(--accent); }
+  .badge.amber { background: var(--amber-soft); color: var(--amber); }
+  .badge.red { background: var(--red-soft); color: var(--red); }
+  .badge.gray { background: var(--surface-2); color: var(--muted); }
+  .badge.active-tag { background: var(--accent); color: #fff; }
+  .badge.active-tag.danger { background: var(--red); color: #fff; }
+
+  .card-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .warn-banner {
+    background: var(--red-soft);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    font-size: 11.5px;
+  }
+  .spec-item {
+    background: var(--surface-2);
+    border-radius: 9px;
+    padding: 6px 8px;
+  }
+  .spec-item span { display: block; font-size: 10px; color: var(--muted); }
+  .spec-item b { font-weight: 600; color: var(--text); }
+
+  .actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+  }
+  button.primary {
+    flex: 1;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s, background 0.15s;
+  }
+  button.primary.danger { background: var(--red); }
+  button.primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  button.secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .log-box {
+    margin-top: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 10px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: none;
+  }
+  .log-box.show { display: block; }
+  .note {
+    margin-top: 14px;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="title-wrap">
+      <h1>Marble Thermal Tuner</h1>
+      <p>POCO F5 (marble) &bull; Hot Reload &amp; Persistent</p>
+    </div>
+    <div id="daemonPill" class="pill"><span class="dot"></span><span id="daemonText">Loading...</span></div>
+  </header>
+
+  <section class="telemetry">
+    <div class="stat">
+      <div class="label">Board Temp</div>
+      <div class="val" id="tBoard">--°C</div>
+      <div class="sub">VIRTUAL-SENSOR0</div>
+    </div>
+    <div class="stat">
+      <div class="label">Battery Temp</div>
+      <div class="val" id="tBat">--°C</div>
+      <div class="sub">Battery NTC</div>
+    </div>
+    <div class="stat">
+      <div class="label">CPU Max</div>
+      <div class="val" id="tCpu">--°C</div>
+      <div class="sub" id="cpuFreqs">-- / -- GHz</div>
+    </div>
+  </section>
+
+  <div class="meta-bar">
+    <div>Active preset: <strong id="activeLabel">--</strong></div>
+    <div>sconfig: <strong id="sconfigVal">--</strong> &bull; Mounts: <strong id="mountCount">0</strong>/7</div>
+  </div>
+
+  <div class="section-title">Thermal Presets</div>
+  <div class="presets" id="presetList"></div>
+
+  <div class="actions">
+    <button id="applyBtn" class="primary" onclick="applySelected()">Apply Now (Hot Reload)</button>
+    <button class="secondary" onclick="refreshStatus()">Refresh</button>
+  </div>
+
+  <div id="logBox" class="log-box"></div>
+  <p class="note">Selected preset persists across reboots. Battery charging protection (MONITOR-BAT) &amp; hardware hard limits always remain active.</p>
+</div>
+
+<script>
+const MOD_DIR = "/data/adb/modules/marble_thermal_tuner";
+
+const PRESETS = [
+  {
+    id: "balanced",
+    name: "Balanced",
+    badge: "Recommended",
+    badgeClass: "blue",
+    desc: "Best for daily gaming without a cooler. Removes early throttling (15°C/43°C) and keeps battery around ~45°C.",
+    specs: [
+      ["CPU Big / Prime", "Full up to 46°C → 1.88 / 1.55 / 1.11 GHz"],
+      ["GPU Limit", "Full up to 48°C (Lv 1 @ 48°C)"],
+      ["Display Backlight", "Full up to 45°C"],
+      ["Safety", "Stock charging • Hotplug 51°C"]
+    ]
+  },
+  {
+    id: "performance",
+    name: "Performance",
+    badge: "High",
+    badgeClass: "amber",
+    desc: "Sustained high FPS for heavy titles. Full clocks up to 49°C before smooth step-down.",
+    specs: [
+      ["CPU Big / Prime", "Full up to 49°C → 2.00 / 1.55 / 1.11 GHz"],
+      ["GPU Limit", "Full up to 50°C (Lv 1 @ 50°C)"],
+      ["Display Backlight", "Full up to 49°C"],
+      ["Safety", "Stock charging • Hotplug 52.5°C"]
+    ]
+  },
+  {
+    id: "unleashed",
+    name: "Unleashed",
+    badge: "Cooler Only",
+    badgeClass: "red",
+    danger: true,
+    warning: "FAN COOLER REQUIRED: All userspace CPU, GPU, backlight & hotplug limits are removed. Relies strictly on kernel & hardware hard limits (GPU 95°C, CPU LMh ~95-100°C / 110°C, TSENS 115-125°C). Do NOT use long-term without active cooling.",
+    desc: "Zero userspace throttling for maximum benchmark or active-cooled gaming performance.",
+    specs: [
+      ["CPU / GPU", "No userspace limit (hardware/kernel only)"],
+      ["Display Backlight", "No thermal dimming"],
+      ["Core Hotplug", "Disabled in userspace"],
+      ["Charging Protection", "Stock MONITOR-BAT kept active"]
+    ]
+  },
+  {
+    id: "stock",
+    name: "Stock",
+    badge: "Default",
+    badgeClass: "gray",
+    desc: "Unmounts all overrides and restores 100% original /vendor/etc HyperOS thermal profiles.",
+    specs: [
+      ["CPU Big / Prime", "Stock HyperOS (43°C / 46°C)"],
+      ["GPU Limit", "Stock HyperOS"],
+      ["Display Backlight", "Dims starting at 37°C"],
+      ["Bind Mounts", "0 files overridden"]
+    ]
+  }
+];
+
+const SCONFIG_NAMES = {
+  "0": "normal", "9": "tgame", "10": "nolimits", "12": "camera",
+  "13": "tgame", "16": "tgame", "20": "mgame", "21": "video",
+  "23": "yuanshen", "30": "per-normal", "40": "nolimits",
+  "50": "mgame", "53": "yuanshen", "98": "per-cgame", "99": "cgame"
+};
+
+let activePreset = "balanced";
+let selectedPreset = "balanced";
+let cbId = 0;
+
+function ksuExec(cmd) {
+  return new Promise((resolve, reject) => {
+    if (typeof window.ksu === "undefined" || typeof window.ksu.exec !== "function") {
+      reject(new Error("Please open this WebUI inside KernelSU Manager."));
+      return;
+    }
+    const cbName = "mtt_cb_" + Date.now() + "_" + (cbId++);
+    window[cbName] = (errno, stdout, stderr) => {
+      delete window[cbName];
+      resolve({ errno, stdout: stdout || "", stderr: stderr || "" });
+    };
+    try {
+      window.ksu.exec(cmd, "{}", cbName);
+    } catch (e) {
+      delete window[cbName];
+      reject(e);
+    }
+  });
+}
+
+function showToast(msg) {
+  if (window.ksu && typeof window.ksu.toast === "function") {
+    try { window.ksu.toast(msg); } catch (_) {}
+  }
+}
+
+function setLog(msg) {
+  const el = document.getElementById("logBox");
+  el.textContent = msg;
+  el.classList.add("show");
+}
+
+function renderPresets() {
+  const wrap = document.getElementById("presetList");
+  wrap.innerHTML = "";
+  PRESETS.forEach(p => {
+    const isSel = selectedPreset === p.id;
+    const isAct = activePreset === p.id;
+    const card = document.createElement("div");
+    card.className = "card" + (p.danger ? " danger" : "") + (isSel ? " active" : "");
+    card.onclick = () => { selectedPreset = p.id; renderPresets(); };
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-title">${p.name}</div>
+        <div style="display:flex;gap:5px;align-items:center;">
+          ${isAct ? `<span class="badge active-tag${p.danger ? " danger" : ""}">Active</span>` : ""}
+          <span class="badge ${p.badgeClass}">${p.badge}</span>
+        </div>
+      </div>
+      ${p.warning ? `<div class="warn-banner">${p.warning}</div>` : ""}
+      <p class="card-desc">${p.desc}</p>
+      <div class="specs">
+        ${p.specs.map(([k,v]) => `<div class="spec-item"><span>${k}</span><b>${v}</b></div>`).join("")}
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+  const btn = document.getElementById("applyBtn");
+  const targetObj = PRESETS.find(x => x.id === selectedPreset);
+  btn.className = "primary" + (targetObj && targetObj.danger ? " danger" : "");
+  btn.textContent = selectedPreset === activePreset
+    ? `Reload "${targetObj.name}" (Hot Reload)`
+    : `Apply "${targetObj.name}" (Hot Reload)`;
+}
+
+function fmtTemp(mc) {
+  const n = Number(mc);
+  if (!n || isNaN(n)) return "--°C";
+  return (n / 1000).toFixed(1) + "°C";
+}
+function fmtDeci(dc) {
+  const n = Number(dc);
+  if (!n || isNaN(n)) return "--°C";
+  return (n / 10).toFixed(1) + "°C";
+}
+function fmtGhz(khz) {
+  const n = Number(khz);
+  if (!n || isNaN(n)) return "--";
+  return (n / 1000000).toFixed(2);
+}
+
+async function refreshStatus(syncSelection = false) {
+  try {
+    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/status.sh`);
+    if (res.errno !== 0) {
+      setLog("Failed to read status: " + (res.stderr || res.stdout));
+      return;
+    }
+    const data = JSON.parse(res.stdout.trim());
+    activePreset = data.preset || "stock";
+    if (syncSelection) selectedPreset = activePreset;
+
+    document.getElementById("tBoard").textContent = fmtTemp(data.board_mc);
+    document.getElementById("tBat").textContent = fmtDeci(data.bat_dc);
+    document.getElementById("tCpu").textContent = fmtTemp(data.cpu_mc);
+    document.getElementById("cpuFreqs").textContent = `${fmtGhz(data.cpu4_khz)} / ${fmtGhz(data.cpu7_khz)} GHz`;
+
+    const presetObj = PRESETS.find(x => x.id === activePreset);
+    document.getElementById("activeLabel").textContent = presetObj ? presetObj.name : activePreset;
+    const scName = SCONFIG_NAMES[String(data.sconfig)] || "";
+    document.getElementById("sconfigVal").textContent = scName ? `${data.sconfig} (${scName})` : data.sconfig;
+    document.getElementById("mountCount").textContent = data.mounted;
+
+    const pill = document.getElementById("daemonPill");
+    const dText = document.getElementById("daemonText");
+    if (data.pid) {
+      pill.className = "pill";
+      dText.textContent = `mi_thermald #${data.pid}`;
+    } else {
+      pill.className = "pill warn";
+      dText.textContent = "mi_thermald stopped";
+    }
+    renderPresets();
+  } catch (e) {
+    document.getElementById("daemonText").textContent = "Preview Mode";
+    setLog(e.message);
+  }
+}
+
+async function applySelected() {
+  const btn = document.getElementById("applyBtn");
+  btn.disabled = true;
+  btn.textContent = "Applying & restarting mi_thermald...";
+  try {
+    const res = await ksuExec(`/system/bin/sh ${MOD_DIR}/apply_preset.sh ${selectedPreset} hot`);
+    const out = (res.stdout + " " + res.stderr).trim();
+    setLog(out || "Done.");
+    if (res.errno === 0 && res.stdout.includes("OK ")) {
+      activePreset = selectedPreset;
+      const obj = PRESETS.find(x => x.id === activePreset);
+      showToast(`"${obj.name}" applied & saved for reboot!`);
+    } else {
+      showToast("Failed to apply preset. Check log below.");
+    }
+  } catch (e) {
+    setLog("Error: " + e.message);
+    showToast("Error: " + e.message);
+  } finally {
+    btn.disabled = false;
+    await refreshStatus(false);
+  }
+}
+
+if (window.ksu && typeof window.ksu.enableEdgeToEdge === "function") {
+  try { window.ksu.enableEdgeToEdge(true); } catch (_) {}
+}
+renderPresets();
+refreshStatus(true);
+setInterval(() => refreshStatus(false), 3000);
+</script>
+</body>
+</html>
