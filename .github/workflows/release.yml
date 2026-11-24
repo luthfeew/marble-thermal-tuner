@@ -31,20 +31,22 @@ jobs:
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION=$(grep -m1 '^version=' module.prop | cut -d= -f2)
           ZIP="Marble-Thermal-Tuner-${VERSION}.zip"
+          cat > /tmp/release_notes.md <<'NOTES_EOF'
+          ## Marble Thermal Tuner (POCO F5 / marble — HyperOS)
+
+          ### Features
+          - **4 clean presets** in KernelSU WebUI: **Balanced** *(Recommended)*, **Performance**, **Unleashed** *(Cooler Only)*, and **Stock**
+          - **Instant Hot Reload (no reboot)** via PID 1 mount namespace bind-mounts + `mi_thermald` restart
+          - **KernelSU Hot Install** support (no reboot needed on install with KernelSU 32700+)
+          - **Persistent across reboots** (`post-fs-data.sh`, `service.sh`, `boot-completed.sh`)
+          - **Unleashed mode**: explicitly overrides all userspace thermal sections at `90°C+` so `mi_thermald` never falls back to `thermal-normal.conf`
+          - Battery charging protection (`MONITOR-BAT`) & kernel/hardware hard limits remain active in all presets
+          NOTES_EOF
+          sed -i 's/^          //' /tmp/release_notes.md
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$ZIP" --clobber
           else
-            gh release create "$TAG" "$ZIP" \
-              --title "Marble Thermal Tuner ${VERSION}" \
-              --notes "## Marble Thermal Tuner ${VERSION} (POCO F5 / marble — HyperOS)
-
-### Features
-- **4 clean presets** in KernelSU WebUI: **Balanced** *(Recommended)*, **Performance**, **Unleashed** *(Cooler Only)*, and **Stock**
-- **Instant Hot Reload (no reboot)** via PID 1 mount namespace bind-mounts + \`mi_thermald\` restart
-- **KernelSU Hot Install** support (no reboot needed on install with KernelSU 32700+)
-- **Persistent across reboots** (\`post-fs-data.sh\`, \`service.sh\`, \`boot-completed.sh\`)
-- **Unleashed mode**: explicitly overrides all userspace thermal sections at \`90°C+\` so \`mi_thermald\` never falls back to \`thermal-normal.conf\`
-- Battery charging protection (\`MONITOR-BAT\`) & kernel/hardware hard limits remain active in all presets"
+            gh release create "$TAG" "$ZIP" --title "Marble Thermal Tuner ${VERSION}" --notes-file /tmp/release_notes.md
           fi
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
