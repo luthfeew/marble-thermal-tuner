@@ -1,4 +1,4 @@
-name: Build & Attach Release ZIP
+name: Build & Publish Release ZIP
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to attach ZIP to (e.g. v1.3)'
+        description: 'Release tag to create or update (e.g. v1.3)'
         required: true
         default: 'v1.3'
 
@@ -24,14 +24,28 @@ jobs:
         run: |
           chmod +x package.sh *.sh META-INF/com/google/android/update-binary
           ./package.sh
-      - name: Upload ZIP to GitHub Release
+      - name: Publish Release & Attach ZIP
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION=$(grep -m1 '^version=' module.prop | cut -d= -f2)
           ZIP="Marble-Thermal-Tuner-${VERSION}.zip"
-          gh release upload "$TAG" "$ZIP" --clobber
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP" --clobber
+          else
+            gh release create "$TAG" "$ZIP" \
+              --title "Marble Thermal Tuner ${VERSION}" \
+              --notes "## Marble Thermal Tuner ${VERSION} (POCO F5 / marble — HyperOS)
+
+### Features
+- **4 clean presets** in KernelSU WebUI: **Balanced** *(Recommended)*, **Performance**, **Unleashed** *(Cooler Only)*, and **Stock**
+- **Instant Hot Reload (no reboot)** via PID 1 mount namespace bind-mounts + \`mi_thermald\` restart
+- **KernelSU Hot Install** support (no reboot needed on install with KernelSU 32700+)
+- **Persistent across reboots** (\`post-fs-data.sh\`, \`service.sh\`, \`boot-completed.sh\`)
+- **Unleashed mode**: explicitly overrides all userspace thermal sections at \`90°C+\` so \`mi_thermald\` never falls back to \`thermal-normal.conf\`
+- Battery charging protection (\`MONITOR-BAT\`) & kernel/hardware hard limits remain active in all presets"
+          fi
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
